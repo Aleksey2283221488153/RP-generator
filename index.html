@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RP Generator — Smart RP</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.header {
+    min-height: 68px;
+    background: #172554;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #60a5fa;
+}
+
+.app {
+    display: flex;
+    min-height: calc(100vh - 68px);
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: white;
+    border-right: 1px solid #e2e8f0;
+    padding: 22px 14px;
+}
+
+.nav {
+    padding: 12px 14px;
+    border-radius: 9px;
+    margin-bottom: 5px;
+    color: #475569;
+    cursor: pointer;
+}
+
+.nav:hover,
+.nav.active {
+    background: #eaf2ff;
+    color: #2563eb;
+}
+
+.main {
+    flex: 1;
+    padding: 28px;
+    min-width: 0;
+    max-width: 1500px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.page-title h1 {
+    margin: 0;
+    font-size: 27px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.card h2 {
+    margin: 0 0 18px;
+    font-size: 19px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+    color: #475569;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: white;
+    outline: none;
+    color: #172033;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.btn-success {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-ai {
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.steps {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 22px;
+    overflow-x: auto;
+}
+
+.step {
+    padding: 9px 15px;
+    background: #e2e8f0;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.step.active {
+    background: #2563eb;
+    color: white;
+}
+
+.step.done {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.hours-box {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.hour-card {
+    padding: 16px;
+    border-radius: 10px;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.hour-card strong {
+    font-size: 23px;
+    display: block;
+}
+
+.ok {
+    color: #16a34a;
+}
+
+.warning {
+    color: #d97706;
+}
+
+.error {
+    color: #dc2626;
+}
+
+.progress {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #2563eb;
+    transition: 0.3s;
+}
+
+.topic {
+    background: white;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 13px;
+    display: grid;
+    grid-template-columns: 25px minmax(140px, 1fr) 80px 150px 40px;
+    gap: 10px;
+    align-items: center;
+}
+
+.drag {
+    cursor: grab;
+    color: #94a3b8;
+    font-size: 20px;
+    text-align: center;
+}
+
+.notice {
+    padding: 13px 15px;
+    border-radius: 9px;
+    background: #eff6ff;
+    color: #1e40af;
+    margin-bottom: 15px;
+}
+
+.notice.warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.preview {
+    background: white;
+    padding: 30px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.preview h1,
+.preview h2 {
+    text-align: center;
+}
+
+.preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.preview th,
+.preview td {
+    border: 1px solid #999;
+    padding: 8px;
+    text-align: left;
+}
+
+.program-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    background: white;
+}
+
+.program-item h3 {
+    margin: 0 0 8px;
+}
+
+.program-meta {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.program-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.small-btn {
+    padding: 6px 9px;
+    font-size: 12px;
+}
+
+.muted {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.empty {
+    padding: 24px;
+    text-align: center;
+    color: #64748b;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.list-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+}
+
+.modal-content {
+    background: white;
+    width: min(1000px, 92vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 14px;
+    padding: 25px;
+}
+
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1000px) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        padding: 18px;
+    }
+
+    .grid-3,
+    .hours-box {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .topic {
+        grid-template-columns: 25px minmax(0, 1fr) 80px;
+    }
+}
+
+@media (max-width: 700px) {
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .nav {
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .main {
+        padding: 12px;
+    }
+
+    .header {
+        padding: 14px 16px;
+    }
+
+    .page-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .page-title h1 {
+        font-size: 23px;
+    }
+
+    .grid,
+    .grid-3,
+    .hours-box,
+    .list-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .preview {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .header,
+    .sidebar,
+    .page-title,
+    .steps,
+    .actions,
+    .no-print {
+        display: none !important;
+    }
+
+    .app,
+    .main {
+        display: block;
+        padding: 0;
+        margin: 0;
+        max-width: none;
+    }
+
+    .card {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .preview {
+        padding: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">RP <span>Generator</span></div>
+    <div>Рабочие программы</div>
+</header>
+
+<div class="app">
+
+<aside class="sidebar">
+    <div class="nav active" onclick="showPrograms('all', this)">📄 Мои РП</div>
+    <div class="nav" onclick="newProgram(this)">➕ Создать РП</div>
+    <div class="nav" onclick="showPrograms('Черновик', this)">📝 Черновики</div>
+    <div class="nav" onclick="showPrograms('На проверке', this)">🔍 На проверке</div>
+    <div class="nav" onclick="showPrograms('На доработке', this)">⚠ На доработке</div>
+    <div class="nav" onclick="showPrograms('Утверждённый', this)">✅ Утверждённые</div>
+    <div class="nav" onclick="showPrograms('Архив', this)">🗄 Архив</div>
+</aside>
+
+<main class="main">
+
+<section id="programList" class="card hidden">
+    <h2 id="listTitle">Мои рабочие программы</h2>
+
+    <div class="list-toolbar">
+        <input id="searchPrograms"
+               placeholder="Поиск по названию или коду..."
+               oninput="renderProgramList()">
+
+        <select id="sortPrograms" onchange="renderProgramList()">
+            <option value="new">Сначала новые</option>
+            <option value="old">Сначала старые</option>
+            <option value="name">По названию</option>
+        </select>
+    </div>
+
+    <div id="programItems"></div>
+</section>
+
+<div id="editor">
+
+<div class="page-title">
+    <h1>Создание рабочей программы</h1>
+    <button class="btn btn-secondary" onclick="save()">💾 Сохранить черновик</button>
+</div>
+
+<div class="steps">
+    <div class="step active" onclick="next(1)">1. Общая информация</div>
+    <div class="step" onclick="next(2)">2. Дисциплина</div>
+    <div class="step" onclick="next(3)">3. Результаты обучения</div>
+    <div class="step" onclick="next(4)">4. Часы</div>
+    <div class="step" onclick="next(5)">5. Темы</div>
+    <div class="step" onclick="next(6)">6. Проверка</div>
+    <div class="step" onclick="next(7)">7. Документ</div>
+</div>
+
+<section id="step1" class="wizard-step">
+    <div class="card">
+        <h2>Общая информация</h2>
+
+        <div class="grid">
+            <div>
+                <label>Специальность</label>
+                <select id="specialty">
+                    <option>06130100 — Программное обеспечение</option>
+                    <option>06120100 — Вычислительная техника и информационные сети</option>
+                    <option>07151000 — Технология машиностроения</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Квалификация</label>
+                <select id="qualification">
+                    <option>4S06130103 — Разработчик программного обеспечения</option>
+                    <option>4S06120101 — Техник-программист</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Курс</label>
+                <select id="course">
+                    <option>1</option>
+                    <option selected>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Группа</label>
+                <input id="group" value="ПО-24-2">
+            </div>
+
+            <div>
+                <label>Учебный год</label>
+                <input id="year" value="2026–2027">
+            </div>
+
+            <div>
+                <label>Семестр</label>
+                <select id="semester">
+                    <option>1</option>
+                    <option selected>2</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Язык обучения</label>
+                <select id="language">
+                    <option>Русский</option>
+                    <option>Қазақша</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Преподаватель</label>
+                <input id="teacher" value="Преподаватель">
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-primary" onclick="next(2)">Далее →</button>
+    </div>
+</section>
+
+<section id="step2" class="wizard-step hidden">
+    <div class="card">
+        <h2>Дисциплина / профессиональный модуль</h2>
+
+        <div class="grid">
+            <div>
+                <label>Тип программы</label>
+                <select id="programType">
+                    <option>Профессиональный модуль</option>
+                    <option>Дисциплина</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Код</label>
+                <input id="code" value="ПМ 10">
+            </div>
+
+            <div>
+                <label>Название</label>
+                <input id="programName" value="Разработка серверных приложений">
+            </div>
+
+            <div>
+                <label>Общее количество часов</label>
+                <input id="totalHours" type="number" value="72" min="1" oninput="recalculate()">
+            </div>
+
+            <div>
+                <label>Количество кредитов</label>
+                <input id="credits" type="number" value="3" min="0">
+            </div>
+
+            <div>
+                <label>Форма контроля</label>
+                <select id="control">
+                    <option>Экзамен</option>
+                    <option>Зачёт</option>
+                    <option>Дифференцированный зачёт</option>
+                    <option>Практическая работа</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="next(1)">← Назад</button>
+        <button class="btn btn-primary" onclick="next(3)">Далее →</button>
+    </div>
+</section>
+
+<section id="step3" class="wizard-step hidden">
+    <div class="card">
+        <h2>Результаты обучения</h2>
+        <div id="outcomes"></div>
+        <button class="btn btn-secondary" onclick="addOutcome()">+ Добавить РО</button>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="next(2)">← Назад</button>
+        <button class="btn btn-primary" onclick="next(4)">Далее →</button>
+    </div>
+</section>
+
+<section id="step4" class="wizard-step hidden">
+    <div class="card">
+        <h2>Распределение часов</h2>
+
+        <div class="grid-3">
+            <div>
+                <label>Теория</label>
+                <input id="theory" type="number" min="0" value="24" oninput="recalculate()">
+            </div>
+
+            <div>
+                <label>Практика</label>
+                <input id="practice" type="number" min="0" value="32" oninput="recalculate()">
+            </div>
+
+            <div>
+                <label>Лабораторные</label>
+                <input id="labs" type="number" min="0" value="8" oninput="recalculate()">
+            </div>
+        </div>
+
+        <div style="margin-top:15px">
+            <label>Самостоятельная работа</label>
+            <input id="selfWork" type="number" min="0" value="8" oninput="recalculate()">
+        </div>
+
+        <div class="hours-box">
+            <div class="hour-card">
+                <strong id="allocated">72</strong>
+                <div>Распределено</div>
+            </div>
+
+            <div class="hour-card">
+                <strong id="required">72</strong>
+                <div>Всего</div>
+            </div>
+
+            <div class="hour-card">
+                <strong id="remaining">0</strong>
+                <div>Разница</div>
+            </div>
+
+            <div class="hour-card">
+                <strong id="hourStatus" class="ok">✓</strong>
+                <div>Статус</div>
+            </div>
+        </div>
+
+        <div style="margin-top:20px" class="progress">
+            <div id="progress" class="progress-bar" style="width:100%"></div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="next(3)">← Назад</button>
+        <button class="btn btn-primary" onclick="next(5)">Далее →</button>
+    </div>
+</section>
+
+<section id="step5" class="wizard-step hidden">
+    <div class="card">
+        <h2>Тематический план</h2>
+
+        <button class="btn btn-ai" onclick="generateAI()">✨ Сгенерировать темы</button>
+        <button class="btn btn-secondary" onclick="addTopic()">+ Тема</button>
+
+        <div class="notice" style="margin-top:15px">
+            Автоматическая генерация создаёт примерный план. Проверьте его соответствие требованиям колледжа.
+        </div>
+
+        <div class="grid" style="margin-bottom:18px">
+            <div>
+                <label>Часов на одну тему</label>
+                <input id="topicDuration" type="number" value="2" min="1" oninput="recalculateTopics()">
+            </div>
+
+            <div>
+                <label>Количество тем</label>
+                <input id="topicCount" type="number" value="36" min="1">
+            </div>
+        </div>
+
+        <div id="topics"></div>
+        <div id="topicTotal"></div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="next(4)">← Назад</button>
+        <button class="btn btn-primary" onclick="next(6)">Проверить →</button>
+    </div>
+</section>
+
+<section id="step6" class="wizard-step hidden">
+    <div class="card">
+        <h2>Проверка рабочей программы</h2>
+        <div id="validation"></div>
+    </div>
+
+    <div class="card">
+        <h2>Цель программы</h2>
+        <textarea id="goal" placeholder="Опишите цель рабочей программы..."></textarea>
+        <button class="btn btn-ai" onclick="generateGoal()" style="margin-top:10px">
+            ✨ Сформировать пример цели
+        </button>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="next(5)">← Назад</button>
+        <button class="btn btn-primary" onclick="next(7)">Предпросмотр →</button>
+    </div>
+</section>
+
+<section id="step7" class="wizard-step hidden">
+    <div class="card">
+        <div class="actions no-print" style="margin-top:0;margin-bottom:15px">
+            <button class="btn btn-success" onclick="downloadWord()">⬇ Word</button>
+            <button class="btn btn-primary" onclick="printDocument()">🖨 PDF / Печать</button>
+            <button class="btn btn-secondary" onclick="save()">💾 Сохранить</button>
+        </div>
+
+        <div id="preview" class="preview"></div>
+    </div>
+
+    <div class="actions no-print">
+        <button class="btn btn-secondary" onclick="next(6)">← Назад</button>
+        <button class="btn btn-success" onclick="submitProgram()">✓ Отправить на согласование</button>
+    </div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div id="modal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-head">
+            <h2>Содержание занятия</h2>
+            <button class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
+        </div>
+
+        <label>Цель</label>
+        <textarea id="lessonGoal"></textarea>
+
+        <label style="margin-top:12px">Содержание</label>
+        <textarea id="lessonContent"></textarea>
+
+        <label style="margin-top:12px">Практическое задание</label>
+        <textarea id="lessonPractice"></textarea>
+
+        <label style="margin-top:12px">Ожидаемый результат</label>
+        <textarea id="lessonResult"></textarea>
+
+        <div class="actions">
+            <button class="btn btn-ai" onclick="generateLesson()">✨ Сформировать текст</button>
+            <button class="btn btn-primary" onclick="saveLesson()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+'use strict';
+
+const STORAGE_KEY = 'rp_generator_programs_v2';
+const $ = id => document.getElementById(id);
+const val = id => $(id).value;
+
+const textFields = [
+    'specialty', 'qualification', 'course', 'group', 'year',
+    'semester', 'language', 'teacher', 'programType', 'code',
+    'programName', 'totalHours', 'credits', 'control',
+    'theory', 'practice', 'labs', 'selfWork',
+    'topicDuration', 'topicCount', 'goal'
+];
+
+let currentStep = 1;
+let topics = [];
+let selectedTopic = -1;
+let currentProgramId = null;
+let activeFilter = 'all';
+
+let outcomes = [
+    {
+        code: 'РО 10.1',
+        name: 'Разрабатывать серверные приложения с использованием Node.js',
+        hours: 72
+    }
+];
+
+let savedPrograms = [];
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function safeNumber(id, min = 0) {
+    const n = Number(val(id));
+    return Number.isFinite(n) ? Math.max(min, n) : 0;
+}
+
+function makeId() {
+    return 'rp_' + Date.now().toString(36) + '_' +
+        Math.random().toString(36).slice(2, 8);
+}
+
+function getHours() {
+    return ['theory', 'practice', 'labs', 'selfWork']
+        .reduce((sum, id) => sum + safeNumber(id), 0);
+}
+
+function validateHours() {
+    return getHours() === safeNumber('totalHours');
+}
+
+// Переключение этапов создания программы
+function next(step) {
+    if (step === 5 && !validateHours()) {
+        alert('Распределите часы так, чтобы сумма совпадала с общим количеством.');
+        return;
+    }
+
+    document.querySelectorAll('.wizard-step').forEach(el => {
+        el.classList.add('hidden');
+    });
+
+    $('step' + step).classList.remove('hidden');
+    currentStep = step;
+
+    document.querySelectorAll('.step').forEach(el => {
+        const n = Number(el.dataset.step);
+
+        el.classList.toggle('active', n === step);
+        el.classList.toggle('done', n < step);
+    });
+
+    if (step === 6) {
+        validateProgram();
+    }
+
+    if (step === 7) {
+        renderPreview();
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Отображение результатов обучения
+function renderOutcomes() {
+    $('outcomes').innerHTML = outcomes.map((o, i) => `
+        <div class="card" style="background:#f8fafc">
+            <div class="grid">
+                <div>
+                    <label>Код РО</label>
+                    <input
+                        value="${escapeHtml(o.code)}"
+                        onchange="outcomes[${i}].code=this.value"
+                    >
+                </div>
+
+                <div>
+                    <label>Количество часов</label>
+                    <input
+                        type="number"
+                        min="0"
+                        value="${Math.max(0, Number(o.hours) || 0)}"
+                        onchange="outcomes[${i}].hours=Math.max(0,Number(this.value)||0)"
+                    >
+                </div>
+            </div>
+
+            <label style="margin-top:12px">Название РО</label>
+
+            <textarea onchange="outcomes[${i}].name=this.value">${escapeHtml(o.name)}</textarea>
+
+            <button
+                class="btn btn-danger"
+                style="margin-top:10px"
+                onclick="outcomes.splice(${i},1);renderOutcomes()"
+            >
+                Удалить
+            </button>
+        </div>
+    `).join('') || `
+        <p class="muted">Результаты обучения ещё не добавлены.</p>
+    `;
+}
+
+function addOutcome() {
+    outcomes.push({
+        code: 'РО ' + (outcomes.length + 1),
+        name: 'Новый результат обучения',
+        hours: 0
+    });
+
+    renderOutcomes();
+}
+
+// Перерасчёт учебных часов
+function recalculate() {
+    const total = safeNumber('totalHours');
+    const allocated = getHours();
+    const difference = total - allocated;
+
+    $('allocated').textContent = allocated;
+    $('required').textContent = total;
+    $('remaining').textContent = Math.abs(difference);
+
+    const status = $('hourStatus');
+
+    status.textContent =
+        difference === 0 ? '✓' :
+        difference > 0 ? '!' : '✕';
+
+    status.className =
+        difference === 0 ? 'ok' :
+        difference > 0 ? 'warning' : 'error';
+
+    $('progress').style.width =
+        (total ? Math.min(100, allocated / total * 100) : 0) + '%';
+
+    recalculateTopics();
+}
+
+// Автоматический расчёт количества тем
+function recalculateTopics() {
+    const total = safeNumber('totalHours');
+    const duration = Math.max(1, safeNumber('topicDuration', 1));
+
+    $('topicCount').value = Math.ceil(total / duration);
+
+    renderTopics();
+}
+
+// Добавление темы
+function addTopic(title = 'Новая тема', hours = null) {
+    const duration = Math.max(
+        1,
+        safeNumber('topicDuration', 1) || 2
+    );
+
+    topics.push({
+        title: title,
+        hours: hours ?? duration,
+        type: 'Практическое занятие',
+        control: 'Практическая работа',
+        content: '',
+        goal: '',
+        practice: '',
+        result: ''
+    });
+
+    renderTopics();
+}
+
+// Отображение тематического плана
+function renderTopics() {
+    const box = $('topics');
+
+    box.innerHTML = topics.map((t, i) => `
+        <div
+            class="topic"
+            draggable="true"
+            data-index="${i}"
+            ondragstart="dragStart(event)"
+            ondragover="event.preventDefault()"
+            ondrop="dropTopic(event)"
+            ondragend="this.classList.remove('dragging')"
+        >
+            <div class="drag" title="Перетащите для сортировки">
+                ☷
+            </div>
+
+            <div>
+                <input
+                    aria-label="Название темы"
+                    value="${escapeHtml(t.title)}"
+                    onchange="topics[${i}].title=this.value"
+                >
+
+                <div style="margin-top:7px">
+                    <button
+                        class="btn btn-secondary small-btn"
+                        onclick="openLesson(${i})"
+                    >
+                        ✏ Содержание
+                    </button>
+                </div>
+            </div>
+
+            <input
+                aria-label="Часы темы"
+                type="number"
+                min="1"
+                value="${Math.max(1, Number(t.hours) || 1)}"
+                onchange="topics[${i}].hours=Math.max(1,Number(this.value)||1);renderTopics()"
+            >
+
+            <select
+                aria-label="Форма контроля"
+                onchange="topics[${i}].control=this.value"
+            >
+                ${[
+                    'Практическая работа',
+                    'Опрос',
+                    'Тестирование',
+                    'Лабораторная работа',
+                    'Проект',
+                    'Экзамен'
+                ].map(x => `
+                    <option ${x === t.control ? 'selected' : ''}>
+                        ${x}
+                    </option>
+                `).join('')}
+            </select>
+
+            <button
+                class="btn btn-danger delete-topic"
+                title="Удалить тему"
+                onclick="topics.splice(${i},1);renderTopics()"
+            >
+                ×
+            </button>
+        </div>
+    `).join('') || `
+        <p class="muted">
+            Тем пока нет. Нажмите «+ Тема» или «Сгенерировать темы».
+        </p>
+    `;
+
+    const total = topics.reduce(
+        (sum, t) => sum + (Number(t.hours) || 0),
+        0
+    );
+
+    const required = safeNumber('totalHours');
+
+    $('topicTotal').innerHTML = `
+        <div class="notice ${total === required ? '' : 'warning'}">
+            Тематический план:
+            <b>${total}</b> / ${required} часов
+            ${
+                total === required
+                    ? '— ✓ сумма совпадает'
+                    : `— разница ${Math.abs(required - total)} часов`
+            }
+        </div>
+    `;
+}
+
+// Перемещение тем мышкой
+let dragIndex = null;
+
+function dragStart(event) {
+    dragIndex = Number(event.currentTarget.dataset.index);
+
+    event.currentTarget.classList.add('dragging');
+
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function dropTopic(event) {
+    event.preventDefault();
+
+    const target = Number(event.currentTarget.dataset.index);
+
+    if (dragIndex === null || dragIndex === target) {
+        return;
+    }
+
+    const moved = topics.splice(dragIndex, 1)[0];
+
+    topics.splice(target, 0, moved);
+
+    dragIndex = null;
+
+    renderTopics();
+}
+
+// Генерация примерного тематического плана
+function generateAI() {
+    const name = val('programName').trim() || 'Изучение дисциплины';
+
+    const templates = [
+        'Введение и основные понятия',
+        'Инструменты и рабочая среда',
+        'Основы и принципы работы',
+        'Структура проекта',
+        'Основные компоненты и их назначение',
+        'Работа с данными',
+        'Создание и настройка проекта',
+        'Обработка ошибок',
+        'Безопасность и надёжность',
+        'Тестирование и отладка',
+        'Практическая разработка проекта',
+        'Итоговая практическая работа'
+    ];
+
+    const count = Math.max(
+        1,
+        Math.min(100, safeNumber('topicCount', 1))
+    );
+
+    const duration = Math.max(
+        1,
+        safeNumber('topicDuration', 1)
+    );
+
+    topics = Array.from({ length: count }, (_, i) => ({
+        title: `${i + 1}. ${templates[i % templates.length]} — ${name}`,
+        hours: duration,
+        type: 'Практическое занятие',
+        control: i % 3 === 0 ? 'Опрос' : 'Практическая работа',
+        content: '',
+        goal: '',
+        practice: '',
+        result: ''
+    }));
+
+    const required = safeNumber('totalHours');
+    const sum = topics.reduce((s, t) => s + t.hours, 0);
+
+    if (topics.length && sum !== required) {
+        topics[topics.length - 1].hours = Math.max(
+            1,
+            topics[topics.length - 1].hours + (required - sum)
+        );
+    }
+
+    renderTopics();
+}
+
+// Генерация цели программы
+function generateGoal() {
+    const name = val('programName').trim() || 'дисциплины';
+
+    $('goal').value =
+        `Цель программы «${name}» — сформировать у обучающихся ` +
+        'знания и практические навыки, необходимые для выполнения ' +
+        'профессиональных задач, применения современных инструментов ' +
+        'разработки и самостоятельного решения типовых задач по профилю обучения.';
+}
+
+// Открытие окна редактирования занятия
+function openLesson(index) {
+    selectedTopic = index;
+
+    const t = topics[index];
+
+    $('lessonGoal').value = t.goal || '';
+    $('lessonContent').value = t.content || '';
+    $('lessonPractice').value = t.practice || '';
+    $('lessonResult').value = t.result || '';
+
+    $('modal').classList.remove('hidden');
+}
+
+function closeModal() {
+    $('modal').classList.add('hidden');
+    selectedTopic = -1;
+}
+
+// Создание примера содержания занятия
+function generateLesson() {
+    if (selectedTopic < 0) {
+        return;
+    }
+
+    const title = topics[selectedTopic].title;
+
+    if (!$('lessonGoal').value) {
+        $('lessonGoal').value =
+            `Сформировать понимание темы «${title}» и закрепить основные понятия.`;
+    }
+
+    if (!$('lessonContent').value) {
+        $('lessonContent').value =
+            `1. Основные понятия темы «${title}».\n` +
+            '2. Разбор ключевых принципов и примеров.\n' +
+            '3. Выполнение заданий с обсуждением результатов.';
+    }
+
+    if (!$('lessonPractice').value) {
+        $('lessonPractice').value =
+            `Выполнить практическое задание по теме «${title}» и проверить полученный результат.`;
+    }
+
+    if (!$('lessonResult').value) {
+        $('lessonResult').value =
+            'Обучающийся объясняет основные понятия темы и выполняет задание по заданным критериям.';
+    }
+}
+
+// Сохранение содержания занятия
+function saveLesson() {
+    if (selectedTopic < 0) {
+        return;
+    }
+
+    const t = topics[selectedTopic];
+
+    t.goal = $('lessonGoal').value;
+    t.content = $('lessonContent').value;
+    t.practice = $('lessonPractice').value;
+    t.result = $('lessonResult').value;
+
+    closeModal();
+    renderTopics();
+}
+
+// Получение данных из формы
+function readForm() {
+    const data = {};
+
+    textFields.forEach(id => {
+        data[id] = val(id);
+    });
+
+    return {
+        ...data,
+        id: currentProgramId || makeId(),
+        outcomes: JSON.parse(JSON.stringify(outcomes)),
+        topics: JSON.parse(JSON.stringify(topics)),
+        status: 'Черновик',
+        updatedAt: new Date().toISOString()
+    };
+}
+
+// Загрузка программы в форму
+function applyProgram(p) {
+    currentProgramId = p.id || makeId();
+
+    textFields.forEach(id => {
+        if (p[id] !== undefined) {
+            $(id).value = p[id];
+        }
+    });
+
+    outcomes = Array.isArray(p.outcomes)
+        ? JSON.parse(JSON.stringify(p.outcomes))
+        : [];
+
+    topics = Array.isArray(p.topics)
+        ? JSON.parse(JSON.stringify(p.topics))
+        : [];
+
+    renderOutcomes();
+    renderTopics();
+    recalculate();
+
+    $('editor').classList.remove('hidden');
+    $('programList').classList.add('hidden');
+
+    next(1);
+}
+
+// Сохранение рабочей программы
+function save(status) {
+    const p = readForm();
+
+    if (status) {
+        p.status = status;
+    }
+
+    const index = savedPrograms.findIndex(
+        item => item.id === p.id
+    );
+
+    if (index >= 0) {
+        p.status = status || savedPrograms[index].status;
+        savedPrograms[index] = p;
+    } else {
+        savedPrograms.push(p);
+    }
+
+    currentProgramId = p.id;
+
+    persist();
+
+    alert('Рабочая программа сохранена.');
+
+    return p;
+}
+
+// Сохранение в браузере
+function persist() {
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(savedPrograms)
+        );
+    } catch (e) {
+        alert(
+            'Не удалось сохранить данные в браузере. ' +
+            'Возможно, память переполнена.'
+        );
+    }
+}
+
+// Загрузка сохранённых программ
+function loadSaved() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || '[]'
+        );
+
+        savedPrograms = Array.isArray(data) ? data : [];
+    } catch (e) {
+        savedPrograms = [];
+    }
+}
+
+// Открытие списка программ
+function showPrograms(filter, element) {
+    activeFilter = filter;
+
+    document.querySelectorAll('.nav').forEach(n => {
+        n.classList.toggle('active', n === element);
+    });
+
+    $('editor').classList.add('hidden');
+    $('programList').classList.remove('hidden');
+
+    const names = {
+        all: 'Мои рабочие программы',
+        'Черновик': 'Черновики',
+        'На проверке': 'На проверке',
+        'На доработке': 'На доработке',
+        'Утверждённый': 'Утверждённые',
+        'Архив': 'Архив'
+    };
+
+    $('listTitle').textContent =
+        names[filter] || 'Мои рабочие программы';
+
+    renderProgramList();
+}
+
+// Отображение списка программ
+function renderProgramList() {
+    const query = (
+        $('searchPrograms').value || ''
+    ).toLowerCase().trim();
+
+    let list = savedPrograms.filter(p => {
+        const matchesFilter =
+            activeFilter === 'all' || p.status === activeFilter;
+
+        const searchText =
+            `${p.programName || ''} ${p.code || ''}`.toLowerCase();
+
+        return matchesFilter && searchText.includes(query);
+    });
+
+    const sort = $('sortPrograms').value;
+
+    if (sort === 'name') {
+        list.sort((a, b) =>
+            (a.programName || '').localeCompare(
+                b.programName || '',
+                'ru'
+            )
+        );
+    } else {
+        list.sort((a, b) =>
+            (new Date(a.updatedAt) - new Date(b.updatedAt)) *
+            (sort === 'old' ? 1 : -1)
+        );
+    }
+
+    $('programItems').innerHTML = list.map(p => `
+        <div class="program-item">
+            <h3>${escapeHtml(p.programName || 'Без названия')}</h3>
+
+            <div class="program-meta">
+                Код: ${escapeHtml(p.code || '—')} ·
+                ${escapeHtml(p.programType || '')}
+                <br>
+
+                Группа: ${escapeHtml(p.group || '—')} ·
+                Часы: ${escapeHtml(p.totalHours || 0)}
+                <br>
+
+                Статус:
+                <b>${escapeHtml(p.status || 'Черновик')}</b>
+                · Обновлено:
+                ${new Date(p.updatedAt || Date.now()).toLocaleString('ru-RU')}
+            </div>
+
+            <div class="program-actions">
+                <button
+                    class="btn btn-primary small-btn"
+                    onclick="editProgram('${p.id}')"
+                >
+                    Открыть
+                </button>
+
+                <button
+                    class="btn btn-secondary small-btn"
+                    onclick="exportSaved('${p.id}')"
+                >
+                    Скачать HTML
+                </button>
+
+                <button
+                    class="btn btn-secondary small-btn"
+                    onclick="changeStatus('${p.id}','На проверке')"
+                >
+                    На проверку
+                </button>
+
+                <button
+                    class="btn btn-secondary small-btn"
+                    onclick="changeStatus('${p.id}','На доработке')"
+                >
+                    На доработку
+                </button>
+
+                <button
+                    class="btn btn-success small-btn"
+                    onclick="changeStatus('${p.id}','Утверждённый')"
+                >
+                    Утвердить
+                </button>
+
+                <button
+                    class="btn btn-secondary small-btn"
+                    onclick="changeStatus('${p.id}','Архив')"
+                >
+                    В архив
+                </button>
+
+                <button
+                    class="btn btn-danger small-btn"
+                    onclick="deleteProgram('${p.id}')"
+                >
+                    Удалить
+                </button>
+            </div>
+        </div>
+    `).join('') || `
+        <div class="empty">
+            Рабочие программы не найдены.
+            Создайте новую или измените поиск.
+        </div>
+    `;
+}
+
+// Открытие сохранённой программы
+function editProgram(id) {
+    const p = savedPrograms.find(item => item.id === id);
+
+    if (p) {
+        applyProgram(p);
+    }
+}
+
+// Изменение статуса
+function changeStatus(id, status) {
+    const p = savedPrograms.find(item => item.id === id);
+
+    if (!p) {
+        return;
+    }
+
+    p.status = status;
+    p.updatedAt = new Date().toISOString();
+
+    persist();
+    renderProgramList();
+}
+
+// Удаление программы
+function deleteProgram(id) {
+    if (!confirm('Удалить эту рабочую программу?')) {
+        return;
+    }
+
+    savedPrograms = savedPrograms.filter(p => p.id !== id);
+
+    persist();
+    renderProgramList();
+}
+
+// Создание новой программы
+function newProgram(element) {
+    document.querySelectorAll('.nav').forEach(n => {
+        n.classList.toggle('active', n === element);
+    });
+
+    currentProgramId = null;
+
+    textFields.forEach(id => {
+        const el = $(id);
+
+        if (el.tagName === 'SELECT') {
+            el.selectedIndex = 0;
+        } else {
+            el.value = '';
+        }
+    });
+
+    $('course').value = '2';
+    $('group').value = 'ПО-24-2';
+    $('year').value = '2026–2027';
+    $('semester').value = '2';
+    $('teacher').value = 'Преподаватель';
+    $('programType').value = 'Профессиональный модуль';
+    $('code').value = 'ПМ 10';
+    $('programName').value = 'Разработка серверных приложений';
+    $('totalHours').value = '72';
+    $('credits').value = '3';
+    $('control').value = 'Экзамен';
+
+    $('theory').value = '24';
+    $('practice').value = '32';
+    $('labs').value = '8';
+    $('selfWork').value = '8';
+
+    $('topicDuration').value = '2';
+    $('topicCount').value = '36';
+    $('goal').value = '';
+
+    outcomes = [{
+        code: 'РО 10.1',
+        name: 'Разрабатывать серверные приложения с использованием Node.js',
+        hours: 72
+    }];
+
+    topics = [];
+
+    renderOutcomes();
+    recalculate();
+
+    $('editor').classList.remove('hidden');
+    $('programList').classList.add('hidden');
+
+    next(1);
+}
+
+// Проверка программы перед завершением
+function validateProgram() {
+    const checks = [
+        [
+            'Указано название программы',
+            !!val('programName').trim()
+        ],
+        [
+            'Указан преподаватель',
+            !!val('teacher').trim()
+        ],
+        [
+            'Распределение часов совпадает с общим количеством',
+            validateHours()
+        ],
+        [
+            'Добавлены результаты обучения',
+            outcomes.length > 0
+        ],
+        [
+            'Сумма часов тематического плана совпадает с общей нагрузкой',
+            topics.reduce(
+                (s, t) => s + (Number(t.hours) || 0),
+                0
+            ) === safeNumber('totalHours')
+        ],
+        [
+            'У каждой темы есть название',
+            topics.length > 0 &&
+            topics.every(t => String(t.title).trim())
+        ]
+    ];
+
+    $('validation').innerHTML = checks.map(([label, ok]) => `
+        <div style="padding:10px 0;border-bottom:1px solid #e2e8f0">
+            <span class="${ok ? 'ok' : 'error'}">
+                ${ok ? '✓' : '⚠'}
+            </span>
+
+            ${escapeHtml(label)}
+        </div>
+    `).join('');
+}
+
+// Формирование предварительного просмотра программы
+function renderPreview() {
+    const p = readForm();
+
+    const outcomeRows = p.outcomes.map(o => `
+        <tr>
+            <td>${escapeHtml(o.code)}</td>
+            <td>${escapeHtml(o.name)}</td>
+            <td>${escapeHtml(o.hours)}</td>
+        </tr>
+    `).join('');
+
+    const topicRows = p.topics.map((t, i) => `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${escapeHtml(t.title)}</td>
+            <td>${escapeHtml(t.hours)}</td>
+            <td>${escapeHtml(t.control)}</td>
+            <td>${escapeHtml(t.goal || '')}</td>
+        </tr>
+    `).join('');
+
+    $('preview').innerHTML = `
+        <h1>РАБОЧАЯ УЧЕБНАЯ ПРОГРАММА</h1>
+
+        <h2>${escapeHtml(p.programName)}</h2>
+
+        <p style="text-align:center">
+            ${escapeHtml(p.programType)} ·
+            ${escapeHtml(p.code)}
+        </p>
+
+        <p>
+            <b>Специальность:</b> ${escapeHtml(p.specialty)}
+            <br>
+
+            <b>Квалификация:</b> ${escapeHtml(p.qualification)}
+            <br>
+
+            <b>Курс / группа:</b>
+            ${escapeHtml(p.course)} / ${escapeHtml(p.group)}
+            <br>
+
+            <b>Учебный год:</b> ${escapeHtml(p.year)}
+            <br>
+
+            <b>Семестр:</b> ${escapeHtml(p.semester)}
+            <br>
+
+            <b>Язык обучения:</b> ${escapeHtml(p.language)}
+            <br>
+
+            <b>Преподаватель:</b> ${escapeHtml(p.teacher)}
+        </p>
+
+        <h2>1. Общая характеристика</h2>
+
+        <p>
+            <b>Объём:</b> ${escapeHtml(p.totalHours)} часов.
+            <b>Кредиты:</b> ${escapeHtml(p.credits)}.
+            <b>Форма контроля:</b> ${escapeHtml(p.control)}.
+        </p>
+
+        <p>
+            <b>Цель программы:</b>
+            ${escapeHtml(p.goal || 'Цель программы не указана.')}
+        </p>
+
+        <h2>2. Результаты обучения</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Результат обучения</th>
+                    <th>Часы</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                ${outcomeRows || '<tr><td colspan="3">Не указаны</td></tr>'}
+            </tbody>
+        </table>
+
+        <h2>3. Распределение часов</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Теория</th>
+                    <th>Практика</th>
+                    <th>Лабораторные</th>
+                    <th>Самостоятельная работа</th>
+                    <th>Всего</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>${escapeHtml(p.theory)}</td>
+                    <td>${escapeHtml(p.practice)}</td>
+                    <td>${escapeHtml(p.labs)}</td>
+                    <td>${escapeHtml(p.selfWork)}</td>
+                    <td>${escapeHtml(p.totalHours)}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Тематический план</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Тема</th>
+                    <th>Часы</th>
+                    <th>Форма контроля</th>
+                    <th>Цель занятия</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                ${topicRows || '<tr><td colspan="5">Темы не добавлены</td></tr>'}
+            </tbody>
+        </table>
+
+        <p style="margin-top:40px">
+            Преподаватель: ____________________
+            / ${escapeHtml(p.teacher)} /
+        </p>
+
+        <p>Дата: «____» ______________ 20___ г.</p>
+    `;
+}
+
+// Печать и сохранение в PDF через окно печати браузера
+function printDocument() {
+    renderPreview();
+    window.print();
+}
+
+// Экспорт программы в Word
+function downloadWord() {
+    renderPreview();
+
+    const content = $('preview').innerHTML;
+
+    const doc = `
+        <!DOCTYPE html>
+        <html lang="ru">
+        <head>
+            <meta charset="UTF-8">
+
+            <style>
+                body {
+                    font-family: "Times New Roman", serif;
+                    font-size: 12pt;
+                    line-height: 1.4;
+                }
+
+                h1, h2 {
+                    text-align: center;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 12px 0;
+                }
+
+                td, th {
+                    border: 1px solid #555;
+                    padding: 6px;
+                    text-align: left;
+                }
+
+                th {
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+
+        <body>
+            ${content}
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob(
+        ['\ufeff', doc],
+        { type: 'application/msword' }
+    );
+
+    downloadBlob(
+        blob,
+        `${safeFileName(val('programName') || 'Рабочая программа')}.doc`
+    );
+}
+
+// Очистка названия файла от запрещённых символов
+function safeFileName(name) {
+    return String(name)
+        .replace(/[\\/:*?"<>|]+/g, '_')
+        .slice(0, 80);
+}
+
+// Скачивание сформированного файла
+function downloadBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = name;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Экспорт сохранённой программы
+function exportSaved(id) {
+    const p = savedPrograms.find(x => x.id === id);
+
+    if (!p) {
+        return;
+    }
+
+    const old = readForm();
+
+    applyProgram(p);
+    renderPreview();
+    downloadWord();
+
+    applyProgram(old);
+}
+
+// Отправка программы на проверку
+function submitProgram() {
+    const p = save('На проверке');
+
+    p.status = 'На проверке';
+
+    persist();
+
+    alert('Программа сохранена и отмечена как «На проверке».');
+
+    showPrograms(
+        'На проверке',
+        document.querySelector('[data-filter="На проверке"]')
+    );
+}
+
+// Первоначальная загрузка приложения
+loadSaved();
+renderOutcomes();
+recalculate();
+
+</script>
+</body>
+</html>
